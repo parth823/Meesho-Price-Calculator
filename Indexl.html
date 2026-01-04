@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meesho Price Calculator</title>
+    <!-- Tailwind CSS for modern styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+        .card { background: white; border-radius: 12px; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); }
+        .input-field { width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 8px; transition: all 0.2s; }
+        .input-field:focus { outline: none; border-color: #7c3aed; ring: 2px solid #ddd6fe; }
+        .result-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f1f5f9; }
+        .result-row:last-child { border-bottom: none; }
+        .highlight { font-weight: 700; color: #7c3aed; font-size: 1.25rem; }
+    </style>
+    <!-- PWA Manifest for "Install App" prompt -->
+    <link rel="manifest" href="data:application/manifest+json,{%22name%22:%22Meesho%20Price%20Calculator%22,%22short_name%22:%22PriceCalc%22,%22start_url%22:%22.%22,%22display%22:%22standalone%22,%22background_color%22:%22%23ffffff%22,%22theme_color%22:%22%237c3aed%22,%22icons%22:[{%22src%22:%22https://cdn-icons-png.flaticon.com/512/1001/1001371.png%22,%22sizes%22:%22512x512%22,%22type%22:%22image/png%22}]}">
+</head>
+<body class="p-4 md:p-8">
+
+    <div class="max-w-2xl mx-auto">
+        <!-- Header -->
+        <div class="flex items-center gap-3 mb-8">
+            <div class="bg-purple-600 p-3 rounded-xl shadow-lg">
+                <i data-lucide="calculator" class="text-white"></i>
+            </div>
+            <div>
+                <h1 class="text-2xl font-bold text-slate-800">Meesho Price Calculator</h1>
+                <p class="text-slate-500 text-sm">Calculate listing prices with precision</p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <!-- Inputs Section -->
+            <div class="card p-6">
+                <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                    <i data-lucide="edit-3" class="w-4 h-4"></i> Cost Inputs
+                </h2>
+                
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Product Cost (₹)</label>
+                        <input type="number" id="productPrice" value="21" class="input-field" oninput="calculate()">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Return Cost % (of Product)</label>
+                        <input type="number" id="returnPct" value="10" class="input-field" oninput="calculate()">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Shipping Charge (Return)</label>
+                        <input type="number" id="shippingCharge" value="160" class="input-field" oninput="calculate()">
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">RTO Damage (%)</label>
+                            <input type="number" id="rtoDamage" value="2" class="input-field" oninput="calculate()">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">CAC / Misc (₹)</label>
+                            <input type="number" id="cac" value="10" class="input-field" oninput="calculate()">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">Packaging (₹)</label>
+                            <input type="number" id="pkgn" value="10" class="input-field" oninput="calculate()">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">Profit Margin (₹)</label>
+                            <input type="number" id="profit" value="50" class="input-field" oninput="calculate()">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">GST Rate (%)</label>
+                        <select id="gstRate" class="input-field" onchange="calculate()">
+                            <option value="0">0% (GST Exempt)</option>
+                            <option value="0.05">5%</option>
+                            <option value="0.12">12%</option>
+                            <option value="0.18" selected>18%</option>
+                            <option value="0.28">28%</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Summary Section -->
+            <div class="card p-6 border-t-4 border-purple-600">
+                <h2 class="text-lg font-semibold mb-4 flex items-center gap-2 text-purple-700">
+                    <i data-lucide="bar-chart-3" class="w-4 h-4"></i> Calculation Breakdown
+                </h2>
+                
+                <div class="space-y-1">
+                    <div class="result-row">
+                        <span class="text-slate-600">Base Product Cost</span>
+                        <span id="res_product" class="font-medium">₹0.00</span>
+                    </div>
+                    <div class="result-row">
+                        <span class="text-slate-600">Return Risk (10%)</span>
+                        <span id="res_return" class="font-medium">₹0.00</span>
+                    </div>
+                    <div class="result-row">
+                        <span class="text-slate-600">Return Shipping (10%)</span>
+                        <span id="res_shipping" class="font-medium">₹0.00</span>
+                    </div>
+                    <div class="result-row">
+                        <span class="text-slate-600">RTO Damage (2%)</span>
+                        <span id="res_rto" class="font-medium">₹0.00</span>
+                    </div>
+                    <div class="result-row border-t border-dashed mt-2 pt-2">
+                        <span class="font-semibold">Subtotal (Pre-GST)</span>
+                        <span id="res_total_pre" class="font-bold text-slate-800">₹0.00</span>
+                    </div>
+                    <div class="result-row">
+                        <span id="gst_label" class="text-slate-600">GST Amount (18%)</span>
+                        <span id="res_gst" class="font-medium">₹0.00</span>
+                    </div>
+                    <div class="result-row bg-purple-50 p-4 -mx-6 my-2 rounded-none border-y border-purple-100">
+                        <span class="font-semibold text-purple-900">Final Listing Price</span>
+                        <span id="res_final" class="highlight">₹0.00</span>
+                    </div>
+                    <div class="result-row border-none pt-4 text-center block">
+                        <div class="text-xs uppercase tracking-wider text-slate-400 font-bold mb-1">Rounded Listing Price</div>
+                        <div id="res_round" class="text-3xl font-black text-slate-900 tracking-tight">₹0</div>
+                    </div>
+                </div>
+
+                <div class="mt-6 pt-4 border-t border-slate-100 flex justify-center">
+                    <button onclick="window.print()" class="text-slate-400 hover:text-slate-600 transition-colors flex items-center gap-2 text-sm">
+                        <i data-lucide="printer" class="w-4 h-4"></i> Print Report
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-8 text-center text-slate-400 text-xs">
+            Meesho Pricing Strategy Tool • Designed for Seller Success
+        </div>
+    </div>
+
+    <script>
+        // Initialize Icons
+        lucide.createIcons();
+
+        function calculate() {
+            // Get inputs
+            const pPrice = parseFloat(document.getElementById('productPrice').value) || 0;
+            const returnPct = (parseFloat(document.getElementById('returnPct').value) || 0) / 100;
+            const rShipping = parseFloat(document.getElementById('shippingCharge').value) || 0;
+            const rtoDamPct = (parseFloat(document.getElementById('rtoDamage').value) || 0) / 100;
+            const cac = parseFloat(document.getElementById('cac').value) || 0;
+            const pkgn = parseFloat(document.getElementById('pkgn').value) || 0;
+            const profit = parseFloat(document.getElementById('profit').value) || 0;
+            const gstRate = parseFloat(document.getElementById('gstRate').value) || 0;
+
+            // Step 1: Intermediate Calculations
+            const returnCost = pPrice * returnPct;
+            const shippingEffective = rShipping * 0.10; // 10% of shipping charge as per your CSV logic
+            const rtoLoss = pPrice * rtoDamPct;
+
+            // Step 2: Sum Pre-GST Total
+            const totalPreGst = pPrice + returnCost + shippingEffective + rtoLoss + cac + pkgn + profit;
+
+            // Step 3: GST Amount
+            const gstAmount = totalPreGst * gstRate;
+
+            // Step 4: Final Calculations
+            const finalPrice = totalPreGst + gstAmount;
+            const roundedPrice = Math.round(finalPrice);
+
+            // Update UI
+            document.getElementById('res_product').innerText = `₹${pPrice.toFixed(2)}`;
+            document.getElementById('res_return').innerText = `₹${returnCost.toFixed(2)}`;
+            document.getElementById('res_shipping').innerText = `₹${shippingEffective.toFixed(2)}`;
+            document.getElementById('res_rto').innerText = `₹${rtoLoss.toFixed(2)}`;
+            document.getElementById('res_total_pre').innerText = `₹${totalPreGst.toFixed(2)}`;
+            
+            document.getElementById('gst_label').innerText = `GST Amount (${(gstRate * 100).toFixed(0)}%)`;
+            document.getElementById('res_gst').innerText = `₹${gstAmount.toFixed(4)}`;
+            
+            document.getElementById('res_final').innerText = `₹${finalPrice.toFixed(4)}`;
+            document.getElementById('res_round').innerText = `₹${roundedPrice}`;
+        }
+
+        // Service Worker registration for PWA installation
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                const blob = new Blob([`
+                    self.addEventListener('install', (e) => {});
+                    self.addEventListener('fetch', (e) => {});
+                `], { type: 'application/javascript' });
+                const url = URL.createObjectURL(blob);
+                navigator.serviceWorker.register(url);
+            });
+        }
+
+        // Initial calc
+        calculate();
+    </script>
+</body>
+</html>

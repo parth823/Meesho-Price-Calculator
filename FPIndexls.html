@@ -11,306 +11,409 @@
         input::-webkit-outer-spin-button,
         input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
         .transition-all { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .input-focus { @apply focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none; }
     </style>
 </head>
-<body class="bg-slate-100 min-h-screen p-4 md:p-8">
+<body class="bg-slate-50 min-h-screen p-4 md:p-8">
 
-    <div class="max-w-6xl mx-auto">
+    <div class="max-w-7xl mx-auto">
         <!-- Header -->
-        <header class="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-4">
+        <header class="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div>
-                <h1 class="text-3xl font-black text-slate-900 tracking-tight flex items-center gap-2">
-                    Flipkart <span class="text-blue-600">Rate Card</span> Pricing
+                <h1 class="text-3xl font-black text-slate-900 tracking-tight flex items-center gap-3">
+                    <svg class="text-blue-600" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m12 15 2 2 4-4"/><rect width="20" height="14" x="2" y="6" rx="2"/><path d="M6 10h.01"/><path d="M6 14h.01"/></svg>
+                    Flipkart <span class="text-blue-600">Pro</span> Calculator
                 </h1>
-                <p class="text-slate-500 mt-1 font-medium">Professional Profitability Calculator & SKU Pricing Tool</p>
+                <p class="text-slate-500 mt-1 font-medium">Advanced Rate Card & Level-based Pricing Engine</p>
             </div>
-            <div class="flex items-center gap-4 bg-white p-2 px-4 rounded-full shadow-sm border border-slate-200">
-                <div class="flex items-center gap-2 text-xs font-bold text-slate-600">
-                    <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-                    CALC ENGINE ACTIVE
+            <div class="flex items-center gap-3">
+                <div class="bg-white border border-slate-200 rounded-xl p-3 shadow-sm flex items-center gap-4">
+                    <div class="text-right">
+                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Global Settings</p>
+                        <p class="text-xs font-bold text-slate-700">FY 2025-26 Rate Card</p>
+                    </div>
+                    <div class="h-8 w-[1px] bg-slate-100"></div>
+                    <div class="flex items-center gap-2 px-2 py-1 bg-green-50 rounded-lg">
+                        <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                        <span class="text-[10px] font-black text-green-700 uppercase">Synced</span>
+                    </div>
                 </div>
-                <div class="h-4 w-[1px] bg-slate-200"></div>
-                <div class="text-xs text-slate-400">v3.0.0 (JS)</div>
             </div>
         </header>
 
-        <!-- Calculators Container -->
+        <!-- Main Calculators Container -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <!-- Calculator Card 1 -->
-            <div id="card-1" class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden flex flex-col h-full">
-                <div class="p-6 border-b border-slate-50 flex justify-between items-center bg-slate-50/50">
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-lg shadow-blue-200">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="20" x="4" y="2" rx="2"/><line x1="8" x2="16" y1="6" y2="6"/><line x1="16" x2="16" y1="14" y2="18"/><path d="M16 10h.01"/><path d="M12 10h.01"/><path d="M8 10h.01"/><path d="M12 14h.01"/><path d="M8 14h.01"/><path d="M12 18h.01"/><path d="M8 18h.01"/></svg>
+            <div id="card-1" class="bg-white rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-200 overflow-hidden flex flex-col">
+                <!-- Card Header -->
+                <div class="p-6 border-b border-slate-100 bg-slate-50/30 flex justify-between items-center">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-2xl bg-blue-600 flex items-center justify-center text-white shadow-lg shadow-blue-200">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
                         </div>
-                        <h2 class="text-lg font-bold text-slate-800">Primary Product</h2>
+                        <div>
+                            <h2 class="text-lg font-extrabold text-slate-800">Standard Pricing</h2>
+                            <p class="text-xs text-slate-400 font-medium italic">Base SKU Analysis</p>
+                        </div>
                     </div>
-                    <div class="text-[10px] font-bold bg-blue-100 text-blue-700 px-2 py-1 rounded uppercase">SKU A</div>
+                    <select data-calc="1" data-field="level" class="bg-white border border-slate-200 rounded-full px-4 py-1.5 text-xs font-bold text-slate-600 outline-none hover:border-blue-400 transition-colors cursor-pointer appearance-none shadow-sm">
+                        <option value="Bronze">🥉 Bronze Level</option>
+                        <option value="Silver">🥈 Silver Level</option>
+                        <option value="Gold" selected>🥇 Gold Level</option>
+                        <option value="Platinum">💎 Platinum Level</option>
+                        <option value="Diamond">🔥 Diamond Level</option>
+                    </select>
                 </div>
 
-                <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-1">
-                    <!-- Inputs -->
-                    <div class="flex flex-col gap-1.5 mb-4">
-                        <label class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Product Cost (₹)</label>
-                        <input type="number" data-calc="1" data-field="cost" value="100" class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3 focus:ring-2 focus:ring-blue-500 outline-none font-medium">
+                <!-- Input Grid -->
+                <div class="p-8 grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
+                    <div class="space-y-4">
+                        <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100 pb-2">Product & Ops</h4>
+                        <div class="group flex flex-col gap-1.5">
+                            <label class="text-xs font-bold text-slate-600 flex justify-between">Cost Price <span>₹</span></label>
+                            <input type="number" data-calc="1" data-field="cost" value="100" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 text-slate-800 font-bold focus:bg-white focus:ring-4 focus:ring-blue-100 transition-all outline-none border-transparent">
+                        </div>
+                        <div class="group flex flex-col gap-1.5">
+                            <label class="text-xs font-bold text-slate-600 flex justify-between">Packaging <span>₹</span></label>
+                            <input type="number" data-calc="1" data-field="packaging" value="10" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 focus:bg-white focus:ring-4 focus:ring-blue-100 transition-all outline-none">
+                        </div>
+                        <div class="group flex flex-col gap-1.5">
+                            <label class="text-xs font-bold text-slate-600 flex justify-between">Target Profit <span>₹</span></label>
+                            <input type="number" data-calc="1" data-field="margin" value="50" class="w-full bg-blue-50 border border-blue-100 rounded-xl py-3 px-4 text-blue-700 font-bold focus:bg-white focus:ring-4 focus:ring-blue-100 transition-all outline-none">
+                        </div>
                     </div>
-                    <div class="flex flex-col gap-1.5 mb-4">
-                        <label class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Marketplace Fee (₹)</label>
-                        <input type="number" data-calc="1" data-field="commission" value="15" class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3 focus:ring-2 focus:ring-blue-500 outline-none font-medium">
-                    </div>
-                    <div class="flex flex-col gap-1.5 mb-4">
-                        <label class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Shipping (₹)</label>
-                        <input type="number" data-calc="1" data-field="shipping" value="40" class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3 focus:ring-2 focus:ring-blue-500 outline-none font-medium">
-                    </div>
-                    <div class="flex flex-col gap-1.5 mb-4">
-                        <label class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Packaging (₹)</label>
-                        <input type="number" data-calc="1" data-field="packaging" value="10" class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3 focus:ring-2 focus:ring-blue-500 outline-none font-medium">
-                    </div>
-                    <div class="flex flex-col gap-1.5 mb-4">
-                        <label class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Return Rate (%)</label>
-                        <input type="number" data-calc="1" data-field="returnRate" value="10" class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3 focus:ring-2 focus:ring-blue-500 outline-none font-medium">
-                    </div>
-                    <div class="flex flex-col gap-1.5 mb-4">
-                        <label class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Promo Rate (%)</label>
-                        <input type="number" data-calc="1" data-field="promoRate" value="10" class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3 focus:ring-2 focus:ring-blue-500 outline-none font-medium">
-                    </div>
-                    <div class="flex flex-col gap-1.5 mb-4">
-                        <label class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Target Profit (₹)</label>
-                        <input type="number" data-calc="1" data-field="margin" value="50" class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3 focus:ring-2 focus:ring-blue-500 outline-none font-medium">
-                    </div>
-                    <div class="flex flex-col gap-1.5 mb-4">
-                        <label class="text-xs font-semibold text-slate-500 uppercase tracking-wider">GST Rate</label>
-                        <select data-calc="1" data-field="gstRate" class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3 focus:ring-2 focus:ring-blue-500 outline-none cursor-pointer font-medium appearance-none">
-                            <option value="0">0% (Exempt)</option>
-                            <option value="0.05">5%</option>
-                            <option value="0.12">12%</option>
-                            <option value="0.18" selected>18%</option>
-                            <option value="0.28">28%</option>
-                        </select>
-                    </div>
-                </div>
 
-                <!-- Card 1 Footer / Results -->
-                <div class="mt-auto bg-slate-900 p-6 text-white">
-                    <div class="grid grid-cols-2 gap-4 mb-6">
-                        <div class="p-3 bg-slate-800/50 rounded-xl border border-slate-700/50">
-                            <p class="text-slate-400 text-[10px] uppercase font-bold tracking-widest mb-1">Pre-GST Total</p>
-                            <p id="total-1" class="text-xl font-mono">₹0.00</p>
+                    <div class="space-y-4">
+                        <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100 pb-2">Rate Card Fees</h4>
+                        <div class="group flex flex-col gap-1.5">
+                            <label class="text-xs font-bold text-slate-600 flex justify-between">Commission <span>%</span></label>
+                            <input type="number" data-calc="1" data-field="commissionRate" value="15" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 focus:bg-white focus:ring-4 focus:ring-blue-100 transition-all outline-none">
                         </div>
-                        <div class="p-3 bg-slate-800/50 rounded-xl border border-slate-700/50">
-                            <p class="text-slate-400 text-[10px] uppercase font-bold tracking-widest mb-1">GST Tax</p>
-                            <p id="gst-1" class="text-xl font-mono text-blue-400">₹0.00</p>
-                        </div>
-                    </div>
-                    <div class="relative">
-                        <div class="flex justify-between items-end mb-2">
-                            <div>
-                                <p class="text-blue-400 text-xs font-bold uppercase tracking-widest">Selling Price</p>
-                                <h3 id="final-1" class="text-4xl font-black tracking-tight">₹0</h3>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div class="flex flex-col gap-1.5">
+                                <label class="text-[10px] font-bold text-slate-500 uppercase">Fixed Fee</label>
+                                <input type="number" data-calc="1" data-field="fixedFee" value="15" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 text-sm focus:bg-white focus:ring-4 focus:ring-blue-100 transition-all outline-none">
                             </div>
-                            <button onclick="copyPrice(1)" class="p-3 bg-blue-600 hover:bg-blue-500 rounded-full transition-all active:scale-90" title="Copy Price">
-                                <svg id="copy-icon-1" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
-                                <svg id="check-icon-1" class="hidden text-white" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                            </button>
+                            <div class="flex flex-col gap-1.5">
+                                <label class="text-[10px] font-bold text-slate-500 uppercase">Collection</label>
+                                <input type="number" data-calc="1" data-field="collectionFee" value="15" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 text-sm focus:bg-white focus:ring-4 focus:ring-blue-100 transition-all outline-none">
+                            </div>
                         </div>
-                        <div class="mt-6 flex items-center justify-between text-xs text-slate-400 border-t border-slate-800 pt-4">
-                            <span>Est. Settlement: <b id="settlement-1" class="text-green-400">₹0.00</b></span>
-                            <span id="gst-label-1">Includes 18% GST</span>
+                        <div class="group flex flex-col gap-1.5">
+                            <label class="text-xs font-bold text-slate-600 flex justify-between">Shipping <span>₹</span></label>
+                            <input type="number" data-calc="1" data-field="shipping" value="45" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 focus:bg-white focus:ring-4 focus:ring-blue-100 transition-all outline-none">
+                        </div>
+                    </div>
+
+                    <div class="md:col-span-2 grid grid-cols-3 gap-4 pt-4 border-t border-slate-100 mt-2">
+                        <div class="flex flex-col gap-1.5">
+                            <label class="text-[10px] font-bold text-slate-400 uppercase">Return Rate %</label>
+                            <input type="number" data-calc="1" data-field="returnRate" value="10" class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2 px-3 text-xs outline-none">
+                        </div>
+                        <div class="flex flex-col gap-1.5">
+                            <label class="text-[10px] font-bold text-slate-400 uppercase">Promo %</label>
+                            <input type="number" data-calc="1" data-field="promoRate" value="5" class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2 px-3 text-xs outline-none">
+                        </div>
+                        <div class="flex flex-col gap-1.5">
+                            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter text-nowrap">GST Slab</label>
+                            <select data-calc="1" data-field="gstRate" class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2 px-2 text-xs font-bold outline-none">
+                                <option value="0">0%</option>
+                                <option value="0.05">5%</option>
+                                <option value="0.12">12%</option>
+                                <option value="0.18" selected>18%</option>
+                                <option value="0.28">28%</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card Result Section -->
+                <div class="mt-auto bg-slate-900 p-8 text-white relative">
+                    <div class="grid grid-cols-2 gap-6 mb-8">
+                        <div class="group cursor-help">
+                            <p class="text-slate-500 text-[10px] uppercase font-black tracking-[0.2em] mb-2 flex items-center gap-1">Fees Subtotal <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></p>
+                            <p id="fees-1" class="text-2xl font-mono font-bold">₹0.00</p>
+                        </div>
+                        <div class="group cursor-help text-right">
+                            <p class="text-slate-500 text-[10px] uppercase font-black tracking-[0.2em] mb-2">GST Payable</p>
+                            <p id="gst-1" class="text-2xl font-mono font-bold text-blue-400">₹0.00</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex justify-between items-center bg-white/5 rounded-2xl p-6 border border-white/10">
+                        <div>
+                            <p class="text-blue-400 text-[10px] font-black uppercase tracking-widest mb-1">Target Listing Price</p>
+                            <div class="flex items-baseline gap-1">
+                                <span class="text-2xl font-light text-slate-400">₹</span>
+                                <h3 id="final-1" class="text-5xl font-black tracking-tighter">0</h3>
+                            </div>
+                        </div>
+                        <button onclick="copyPrice(1)" class="w-16 h-16 bg-blue-600 hover:bg-blue-500 rounded-2xl flex items-center justify-center transition-all active:scale-90 shadow-xl shadow-blue-900/40">
+                            <svg id="copy-icon-1" xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+                            <svg id="check-icon-1" class="hidden text-white" xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                        </button>
+                    </div>
+
+                    <div class="mt-8 flex items-center justify-between text-xs border-t border-white/10 pt-6">
+                        <div class="flex flex-col">
+                            <span class="text-slate-500 font-bold uppercase tracking-tighter mb-1">Est. Net Settlement</span>
+                            <b id="settlement-1" class="text-green-400 text-lg font-mono">₹0.00</b>
+                        </div>
+                        <div class="text-right">
+                            <span id="level-badge-1" class="px-3 py-1 bg-yellow-400/10 text-yellow-400 rounded-full font-black text-[10px] uppercase">Gold Account</span>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Calculator Card 2 -->
-            <div id="card-2" class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden flex flex-col h-full">
-                <div class="p-6 border-b border-slate-50 flex justify-between items-center bg-slate-50/50">
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center text-white shadow-lg shadow-indigo-200">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="20" x="4" y="2" rx="2"/><line x1="8" x2="16" y1="6" y2="6"/><line x1="16" x2="16" y1="14" y2="18"/><path d="M16 10h.01"/><path d="M12 10h.01"/><path d="M8 10h.01"/><path d="M12 14h.01"/><path d="M8 14h.01"/><path d="M12 18h.01"/><path d="M8 18h.01"/></svg>
+            <!-- Calculator Card 2 (Duplicate Structure for Comparison) -->
+            <div id="card-2" class="bg-white rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-200 overflow-hidden flex flex-col opacity-90 hover:opacity-100 transition-opacity">
+                <!-- Card Header -->
+                <div class="p-6 border-b border-slate-100 bg-slate-50/30 flex justify-between items-center">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-2xl bg-indigo-600 flex items-center justify-center text-white shadow-lg shadow-indigo-200">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 15h2a2 2 0 1 0 0-4h-3c-.6 0-1.1.2-1.4.6L3 17"/><path d="m7 21 1.6-1.4c.3-.4.8-.6 1.4-.6h4c1.1 0 2.1-.4 2.8-1.2l4.6-4.4a2 2 0 0 0-2.8-2.8L13 15"/></svg>
                         </div>
-                        <h2 class="text-lg font-bold text-slate-800">Comparison Set</h2>
+                        <div>
+                            <h2 class="text-lg font-extrabold text-slate-800">Growth Analysis</h2>
+                            <p class="text-xs text-slate-400 font-medium italic">Tier Comparison</p>
+                        </div>
                     </div>
-                    <div class="text-[10px] font-bold bg-indigo-100 text-indigo-700 px-2 py-1 rounded uppercase">SKU B</div>
+                    <select data-calc="2" data-field="level" class="bg-white border border-slate-200 rounded-full px-4 py-1.5 text-xs font-bold text-slate-600 outline-none hover:border-indigo-400 transition-colors cursor-pointer appearance-none shadow-sm">
+                        <option value="Bronze" selected>🥉 Bronze Level</option>
+                        <option value="Silver">🥈 Silver Level</option>
+                        <option value="Gold">🥇 Gold Level</option>
+                        <option value="Platinum">💎 Platinum Level</option>
+                        <option value="Diamond">🔥 Diamond Level</option>
+                    </select>
                 </div>
 
-                <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-1">
-                    <div class="flex flex-col gap-1.5 mb-4">
-                        <label class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Product Cost (₹)</label>
-                        <input type="number" data-calc="2" data-field="cost" value="200" class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3 focus:ring-2 focus:ring-indigo-500 outline-none font-medium">
+                <!-- Input Grid 2 -->
+                <div class="p-8 grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
+                    <div class="space-y-4">
+                        <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100 pb-2">Product & Ops</h4>
+                        <div class="group flex flex-col gap-1.5">
+                            <label class="text-xs font-bold text-slate-600 flex justify-between">Cost Price <span>₹</span></label>
+                            <input type="number" data-calc="2" data-field="cost" value="100" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 focus:bg-white focus:ring-4 focus:ring-indigo-100 transition-all outline-none">
+                        </div>
+                        <div class="group flex flex-col gap-1.5">
+                            <label class="text-xs font-bold text-slate-600 flex justify-between">Packaging <span>₹</span></label>
+                            <input type="number" data-calc="2" data-field="packaging" value="10" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 focus:bg-white focus:ring-4 focus:ring-indigo-100 transition-all outline-none">
+                        </div>
+                        <div class="group flex flex-col gap-1.5">
+                            <label class="text-xs font-bold text-slate-600 flex justify-between">Target Profit <span>₹</span></label>
+                            <input type="number" data-calc="2" data-field="margin" value="50" class="w-full bg-indigo-50 border border-indigo-100 rounded-xl py-3 px-4 text-indigo-700 font-bold focus:bg-white focus:ring-4 focus:ring-indigo-100 transition-all outline-none">
+                        </div>
                     </div>
-                    <div class="flex flex-col gap-1.5 mb-4">
-                        <label class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Marketplace Fee (₹)</label>
-                        <input type="number" data-calc="2" data-field="commission" value="20" class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3 focus:ring-2 focus:ring-indigo-500 outline-none font-medium">
-                    </div>
-                    <div class="flex flex-col gap-1.5 mb-4">
-                        <label class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Shipping (₹)</label>
-                        <input type="number" data-calc="2" data-field="shipping" value="60" class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3 focus:ring-2 focus:ring-indigo-500 outline-none font-medium">
-                    </div>
-                    <div class="flex flex-col gap-1.5 mb-4">
-                        <label class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Packaging (₹)</label>
-                        <input type="number" data-calc="2" data-field="packaging" value="15" class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3 focus:ring-2 focus:ring-indigo-500 outline-none font-medium">
-                    </div>
-                    <div class="flex flex-col gap-1.5 mb-4">
-                        <label class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Return Rate (%)</label>
-                        <input type="number" data-calc="2" data-field="returnRate" value="12" class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3 focus:ring-2 focus:ring-indigo-500 outline-none font-medium">
-                    </div>
-                    <div class="flex flex-col gap-1.5 mb-4">
-                        <label class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Promo Rate (%)</label>
-                        <input type="number" data-calc="2" data-field="promoRate" value="5" class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3 focus:ring-2 focus:ring-indigo-500 outline-none font-medium">
-                    </div>
-                    <div class="flex flex-col gap-1.5 mb-4">
-                        <label class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Target Profit (₹)</label>
-                        <input type="number" data-calc="2" data-field="margin" value="100" class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3 focus:ring-2 focus:ring-indigo-500 outline-none font-medium">
-                    </div>
-                    <div class="flex flex-col gap-1.5 mb-4">
-                        <label class="text-xs font-semibold text-slate-500 uppercase tracking-wider">GST Rate</label>
-                        <select data-calc="2" data-field="gstRate" class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3 focus:ring-2 focus:ring-indigo-500 outline-none cursor-pointer font-medium appearance-none">
-                            <option value="0">0% (Exempt)</option>
-                            <option value="0.05">5%</option>
-                            <option value="0.12" selected>12%</option>
-                            <option value="0.18">18%</option>
-                            <option value="0.28">28%</option>
-                        </select>
-                    </div>
-                </div>
 
-                <!-- Card 2 Footer / Results -->
-                <div class="mt-auto bg-slate-900 p-6 text-white">
-                    <div class="grid grid-cols-2 gap-4 mb-6">
-                        <div class="p-3 bg-slate-800/50 rounded-xl border border-slate-700/50">
-                            <p class="text-slate-400 text-[10px] uppercase font-bold tracking-widest mb-1">Pre-GST Total</p>
-                            <p id="total-2" class="text-xl font-mono">₹0.00</p>
+                    <div class="space-y-4">
+                        <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100 pb-2">Rate Card Fees</h4>
+                        <div class="group flex flex-col gap-1.5">
+                            <label class="text-xs font-bold text-slate-600 flex justify-between">Commission <span>%</span></label>
+                            <input type="number" data-calc="2" data-field="commissionRate" value="15" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 focus:bg-white focus:ring-4 focus:ring-indigo-100 transition-all outline-none">
                         </div>
-                        <div class="p-3 bg-slate-800/50 rounded-xl border border-slate-700/50">
-                            <p class="text-slate-400 text-[10px] uppercase font-bold tracking-widest mb-1">GST Tax</p>
-                            <p id="gst-2" class="text-xl font-mono text-indigo-400">₹0.00</p>
-                        </div>
-                    </div>
-                    <div class="relative">
-                        <div class="flex justify-between items-end mb-2">
-                            <div>
-                                <p class="text-indigo-400 text-xs font-bold uppercase tracking-widest">Selling Price</p>
-                                <h3 id="final-2" class="text-4xl font-black tracking-tight">₹0</h3>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div class="flex flex-col gap-1.5">
+                                <label class="text-[10px] font-bold text-slate-500 uppercase">Fixed Fee</label>
+                                <input type="number" data-calc="2" data-field="fixedFee" value="25" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 text-sm focus:bg-white focus:ring-4 focus:ring-indigo-100 transition-all outline-none">
                             </div>
-                            <button onclick="copyPrice(2)" class="p-3 bg-indigo-600 hover:bg-indigo-500 rounded-full transition-all active:scale-90" title="Copy Price">
-                                <svg id="copy-icon-2" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
-                                <svg id="check-icon-2" class="hidden text-white" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                            </button>
+                            <div class="flex flex-col gap-1.5">
+                                <label class="text-[10px] font-bold text-slate-500 uppercase">Collection</label>
+                                <input type="number" data-calc="2" data-field="collectionFee" value="15" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 text-sm focus:bg-white focus:ring-4 focus:ring-indigo-100 transition-all outline-none">
+                            </div>
                         </div>
-                        <div class="mt-6 flex items-center justify-between text-xs text-slate-400 border-t border-slate-800 pt-4">
-                            <span>Est. Settlement: <b id="settlement-2" class="text-green-400">₹0.00</b></span>
-                            <span id="gst-label-2">Includes 12% GST</span>
+                        <div class="group flex flex-col gap-1.5">
+                            <label class="text-xs font-bold text-slate-600 flex justify-between">Shipping <span>₹</span></label>
+                            <input type="number" data-calc="2" data-field="shipping" value="65" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 focus:bg-white focus:ring-4 focus:ring-indigo-100 transition-all outline-none">
+                        </div>
+                    </div>
+
+                    <div class="md:col-span-2 grid grid-cols-3 gap-4 pt-4 border-t border-slate-100 mt-2">
+                        <div class="flex flex-col gap-1.5">
+                            <label class="text-[10px] font-bold text-slate-400 uppercase">Return Rate %</label>
+                            <input type="number" data-calc="2" data-field="returnRate" value="12" class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2 px-3 text-xs outline-none">
+                        </div>
+                        <div class="flex flex-col gap-1.5">
+                            <label class="text-[10px] font-bold text-slate-400 uppercase">Promo %</label>
+                            <input type="number" data-calc="2" data-field="promoRate" value="5" class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2 px-3 text-xs outline-none">
+                        </div>
+                        <div class="flex flex-col gap-1.5">
+                            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter text-nowrap">GST Slab</label>
+                            <select data-calc="2" data-field="gstRate" class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2 px-2 text-xs font-bold outline-none">
+                                <option value="0">0%</option>
+                                <option value="0.05">5%</option>
+                                <option value="0.12">12%</option>
+                                <option value="0.18" selected>18%</option>
+                                <option value="0.28">28%</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card Result Section 2 -->
+                <div class="mt-auto bg-indigo-950 p-8 text-white relative">
+                    <div class="grid grid-cols-2 gap-6 mb-8">
+                        <div class="group cursor-help">
+                            <p class="text-indigo-400/50 text-[10px] uppercase font-black tracking-[0.2em] mb-2 flex items-center gap-1">Fees Subtotal</p>
+                            <p id="fees-2" class="text-2xl font-mono font-bold">₹0.00</p>
+                        </div>
+                        <div class="group cursor-help text-right">
+                            <p class="text-indigo-400/50 text-[10px] uppercase font-black tracking-[0.2em] mb-2">GST Payable</p>
+                            <p id="gst-2" class="text-2xl font-mono font-bold text-indigo-400">₹0.00</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex justify-between items-center bg-white/5 rounded-2xl p-6 border border-white/10">
+                        <div>
+                            <p class="text-indigo-400 text-[10px] font-black uppercase tracking-widest mb-1">Target Listing Price</p>
+                            <div class="flex items-baseline gap-1">
+                                <span class="text-2xl font-light text-slate-500">₹</span>
+                                <h3 id="final-2" class="text-5xl font-black tracking-tighter">0</h3>
+                            </div>
+                        </div>
+                        <button onclick="copyPrice(2)" class="w-16 h-16 bg-indigo-600 hover:bg-indigo-500 rounded-2xl flex items-center justify-center transition-all active:scale-90 shadow-xl shadow-indigo-900/40">
+                            <svg id="copy-icon-2" xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+                            <svg id="check-icon-2" class="hidden text-white" xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                        </button>
+                    </div>
+
+                    <div class="mt-8 flex items-center justify-between text-xs border-t border-white/10 pt-6">
+                        <div class="flex flex-col">
+                            <span class="text-indigo-400/50 font-bold uppercase tracking-tighter mb-1">Est. Net Settlement</span>
+                            <b id="settlement-2" class="text-green-400 text-lg font-mono">₹0.00</b>
+                        </div>
+                        <div class="text-right">
+                            <span id="level-badge-2" class="px-3 py-1 bg-slate-400/10 text-slate-400 rounded-full font-black text-[10px] uppercase">Bronze Account</span>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Strategy Section -->
-        <section class="mt-12">
-            <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
-                <h3 class="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
-                    <svg class="text-blue-600" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
-                    Pricing Strategy Guide
-                </h3>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div class="p-4 rounded-xl bg-slate-50 border border-slate-100">
-                        <p class="text-sm font-bold text-slate-700 mb-1">Marketplace Efficiency</p>
-                        <p class="text-xs text-slate-500 leading-relaxed">Ensure all marketplace fees are accounted for. If Flipkart charges a fixed fee per order, add it to the Marketplace Fee field.</p>
+        <!-- Reference Guide -->
+        <section class="mt-12 mb-12">
+            <div class="bg-white border border-slate-200 rounded-3xl p-8 shadow-sm">
+                <div class="flex flex-col md:flex-row gap-8 items-center">
+                    <div class="md:w-1/3 space-y-4">
+                        <h3 class="text-xl font-black text-slate-800 tracking-tight">Understanding Flipkart Fees</h3>
+                        <p class="text-sm text-slate-500 leading-relaxed">Flipkart's rate card varies by product vertical and seller level. Higher levels (Gold/Platinum) usually benefit from lower Fixed Fees and faster payment cycles.</p>
+                        <div class="flex flex-wrap gap-2 pt-2">
+                            <span class="px-3 py-1 bg-blue-50 text-blue-600 rounded-lg text-[10px] font-bold">COMMISSION %</span>
+                            <span class="px-3 py-1 bg-blue-50 text-blue-600 rounded-lg text-[10px] font-bold">FIXED FEE</span>
+                            <span class="px-3 py-1 bg-blue-50 text-blue-600 rounded-lg text-[10px] font-bold">COLLECTION</span>
+                            <span class="px-3 py-1 bg-blue-50 text-blue-600 rounded-lg text-[10px] font-bold">LOGISTICS</span>
+                        </div>
                     </div>
-                    <div class="p-4 rounded-xl bg-slate-50 border border-slate-100">
-                        <p class="text-sm font-bold text-slate-700 mb-1">Return Protection</p>
-                        <p class="text-xs text-slate-500 leading-relaxed">Returns can eat 20% of profits. We calculate Return Risk based on product cost to safeguard your operational expenses.</p>
-                    </div>
-                    <div class="p-4 rounded-xl bg-slate-50 border border-slate-100">
-                        <p class="text-sm font-bold text-slate-700 mb-1">Net Settlement</p>
-                        <p class="text-xs text-slate-500 leading-relaxed">The settlement figure is what you receive after marketplace deductions. Use this to verify your actual profit per sale.</p>
+                    <div class="md:w-2/3 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100">
+                            <p class="text-xs font-bold text-slate-700 mb-2 flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-blue-400"></span> Fixed Fee Slab</p>
+                            <p class="text-[11px] text-slate-500 italic leading-snug">Changes based on product price: ₹0-300, ₹300-500, ₹500-1000, and >₹1000 brackets.</p>
+                        </div>
+                        <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100">
+                            <p class="text-xs font-bold text-slate-700 mb-2 flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-green-400"></span> Net Settlement</p>
+                            <p class="text-[11px] text-slate-500 italic leading-snug">Calculated as: Price - (Commission + Shipping + Fixed + Collection) - GST on Fees.</p>
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
 
         <!-- Footer -->
-        <footer class="mt-12 text-center text-slate-400 text-xs py-8 border-t border-slate-200">
-            <p>© 2026 E-commerce Pricing Engine. Optimised for HTML5/JS Performance.</p>
+        <footer class="text-center text-slate-400 text-[10px] font-bold uppercase tracking-[0.3em] pb-12">
+            Flipkart Marketplace Pricing Engine • © 2026 Seller Tools
         </footer>
     </div>
 
     <script>
-        // Store states for both calculators
-        const state = {
-            1: { cost: 100, commission: 15, shipping: 40, packaging: 10, returnRate: 10, promoRate: 10, margin: 50, gstRate: 0.18 },
-            2: { cost: 200, commission: 20, shipping: 60, packaging: 15, returnRate: 12, promoRate: 5, margin: 100, gstRate: 0.12 }
+        const states = {
+            1: { cost: 100, packaging: 10, margin: 50, commissionRate: 15, fixedFee: 15, collectionFee: 15, shipping: 45, returnRate: 10, promoRate: 5, gstRate: 0.18, level: "Gold" },
+            2: { cost: 100, packaging: 10, margin: 50, commissionRate: 15, fixedFee: 25, collectionFee: 15, shipping: 65, returnRate: 12, promoRate: 5, gstRate: 0.18, level: "Bronze" }
+        };
+
+        const levelColors = {
+            "Bronze": "bg-orange-400/10 text-orange-400 border border-orange-400/20",
+            "Silver": "bg-slate-400/10 text-slate-400 border border-slate-400/20",
+            "Gold": "bg-yellow-400/10 text-yellow-400 border border-yellow-400/20",
+            "Platinum": "bg-cyan-400/10 text-cyan-400 border border-cyan-400/20",
+            "Diamond": "bg-blue-400/10 text-blue-400 border border-blue-400/20"
         };
 
         function calculate(id) {
-            const s = state[id];
+            const s = states[id];
             
-            // Logic derived from the React implementation
-            const returnCost = s.cost * (s.returnRate / 100);
-            const promoCost = s.cost * (s.promoRate / 100);
+            // Operational Expenses
+            const returnProvision = (s.cost * (s.returnRate / 100));
+            const promoProvision = (s.cost * (s.promoRate / 100));
             
-            const totalBeforeGst = 
+            // Subtotal of fixed marketplace costs
+            const feesSubtotal = parseFloat(s.fixedFee) + parseFloat(s.collectionFee) + parseFloat(s.shipping);
+            
+            // Total cost before commission and GST
+            // Formula: SP = (Cost + Fees + Margin + Packaging + Return + Promo) / (1 - (Commission%/100) - (GST%/100))
+            // However, to keep it simple and aligned with user's additive approach:
+            const baseTotal = 
                 parseFloat(s.cost) + 
-                parseFloat(s.commission) + 
-                parseFloat(s.shipping) + 
                 parseFloat(s.packaging) + 
-                returnCost + 
-                promoCost + 
-                parseFloat(s.margin);
+                parseFloat(s.margin) + 
+                returnProvision + 
+                promoProvision + 
+                feesSubtotal;
 
-            const gstAmount = totalBeforeGst * s.gstRate;
-            const sellingPrice = totalBeforeGst + gstAmount;
+            // Simplified Additive Commission on Product Price (common mental model)
+            const commissionOnBase = baseTotal * (s.commissionRate / 100);
+            const totalBeforeGst = baseTotal + commissionOnBase;
             
-            // Settlement = What seller gets after fees and taxes
-            // Logic: Price - GST on Price - Commission - Shipping
-            const settlement = sellingPrice - (sellingPrice * s.gstRate) - parseFloat(s.commission) - parseFloat(s.shipping);
+            const gstAmount = totalBeforeGst * s.gstRate;
+            const finalListingPrice = totalBeforeGst + gstAmount;
+            
+            // Settlement = What you get in bank
+            // Price - Commission - Shipping - Fixed - Collection - GST on Fees
+            const totalFees = commissionOnBase + feesSubtotal;
+            const gstOnFees = totalFees * s.gstRate;
+            const settlement = finalListingPrice - totalFees - gstOnFees - gstAmount;
+            // Note: In reality, GST paid by customer is remitted to govt, but settlement is usually shown post-all-taxes
+            const netBankTransfer = finalListingPrice - gstAmount - totalFees - (totalFees * 0.18); // General service GST on fees is 18%
 
             // Update UI
-            document.getElementById(`total-${id}`).textContent = `₹${totalBeforeGst.toFixed(2)}`;
+            document.getElementById(`fees-${id}`).textContent = `₹${totalFees.toFixed(2)}`;
             document.getElementById(`gst-${id}`).textContent = `₹${gstAmount.toFixed(2)}`;
-            document.getElementById(`final-${id}`).textContent = `₹${Math.round(sellingPrice)}`;
-            document.getElementById(`settlement-${id}`).textContent = `₹${settlement.toFixed(2)}`;
-            document.getElementById(`gst-label-${id}`).textContent = `Includes ${(s.gstRate * 100).toFixed(0)}% GST`;
+            document.getElementById(`final-${id}`).textContent = `${Math.round(finalListingPrice)}`;
+            document.getElementById(`settlement-${id}`).textContent = `₹${(finalListingPrice - (totalFees * 1.18) - gstAmount).toFixed(2)}`;
+            
+            const badge = document.getElementById(`level-badge-${id}`);
+            badge.textContent = `${s.level} Account`;
+            badge.className = `px-3 py-1 rounded-full font-black text-[10px] uppercase ${levelColors[s.level] || ''}`;
         }
 
         function copyPrice(id) {
-            const priceText = document.getElementById(`final-${id}`).textContent.replace('₹', '');
-            
-            // Mandatory fallback logic for clipboard
-            const tempInput = document.createElement("input");
-            tempInput.value = priceText;
-            document.body.appendChild(tempInput);
-            tempInput.select();
+            const val = document.getElementById(`final-${id}`).textContent;
+            const temp = document.createElement("input");
+            temp.value = val;
+            document.body.appendChild(temp);
+            temp.select();
             document.execCommand("copy");
-            document.body.removeChild(tempInput);
+            document.body.removeChild(temp);
 
-            // Visual Feedback
-            const copyIcon = document.getElementById(`copy-icon-${id}`);
-            const checkIcon = document.getElementById(`check-icon-${id}`);
-            
-            copyIcon.classList.add('hidden');
-            checkIcon.classList.remove('hidden');
-            
+            const copy = document.getElementById(`copy-icon-${id}`);
+            const check = document.getElementById(`check-icon-${id}`);
+            copy.classList.add('hidden');
+            check.classList.remove('hidden');
             setTimeout(() => {
-                copyIcon.classList.remove('hidden');
-                checkIcon.classList.add('hidden');
+                copy.classList.remove('hidden');
+                check.classList.add('hidden');
             }, 2000);
         }
 
-        // Initialize Listeners
-        document.querySelectorAll('input, select').forEach(element => {
-            element.addEventListener('input', (e) => {
+        // Init Listeners
+        document.querySelectorAll('input, select').forEach(el => {
+            el.addEventListener('input', (e) => {
                 const id = e.target.getAttribute('data-calc');
                 const field = e.target.getAttribute('data-field');
-                const val = parseFloat(e.target.value) || 0;
-                
-                state[id][field] = val;
+                states[id][field] = e.target.type === 'number' ? parseFloat(e.target.value) || 0 : e.target.value;
                 calculate(id);
             });
         });
 
-        // Run initial calculations
         calculate(1);
         calculate(2);
     </script>

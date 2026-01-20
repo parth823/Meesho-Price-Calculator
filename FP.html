@@ -1,0 +1,298 @@
+import React, { useState, useEffect, useMemo } from 'react';
+import { 
+  Calculator, 
+  Settings, 
+  Info, 
+  ChevronRight, 
+  Package, 
+  Truck, 
+  Tag, 
+  TrendingUp, 
+  DollarSign,
+  AlertCircle,
+  Copy,
+  CheckCircle2
+} from 'lucide-react';
+
+const App = () => {
+  // --- State for Calculator 1 (Primary) ---
+  const [calc1, setCalc1] = useState({
+    cost: 100,
+    commission: 15,
+    shipping: 40,
+    packaging: 10,
+    returnRate: 10, // Percent
+    promoRate: 10, // Percent
+    margin: 50,
+    gstRate: 0.18
+  });
+
+  // --- State for Calculator 2 (Secondary) ---
+  const [calc2, setCalc2] = useState({
+    cost: 200,
+    commission: 15,
+    shipping: 60,
+    packaging: 15,
+    returnRate: 12,
+    promoRate: 5,
+    margin: 100,
+    gstRate: 0.12
+  });
+
+  const [copied, setCopied] = useState(null);
+
+  const handleCopy = (val, id) => {
+    document.execCommand('copy'); // Fallback logic as per instructions
+    const tempInput = document.createElement("input");
+    tempInput.value = Math.round(val);
+    document.body.appendChild(tempInput);
+    tempInput.select();
+    document.execCommand("copy");
+    document.body.removeChild(tempInput);
+    
+    setCopied(id);
+    setTimeout(() => setCopied(null), 2000);
+  };
+
+  const calculateValues = (state) => {
+    const returnCost = state.cost * (state.returnRate / 100);
+    const promoCost = state.cost * (state.promoRate / 100);
+    
+    // Total before GST = Cost + Comm + Ship + Pkg + Return + Promo + Margin
+    const totalBeforeGst = 
+      parseFloat(state.cost) + 
+      parseFloat(state.commission) + 
+      parseFloat(state.shipping) + 
+      parseFloat(state.packaging) + 
+      returnCost + 
+      promoCost + 
+      parseFloat(state.margin);
+
+    const gstAmount = totalBeforeGst * state.gstRate;
+    const sellingPrice = totalBeforeGst + gstAmount;
+    const settlement = sellingPrice - (sellingPrice * state.gstRate) - parseFloat(state.commission) - parseFloat(state.shipping);
+
+    return {
+      returnCost,
+      promoCost,
+      totalBeforeGst,
+      gstAmount,
+      sellingPrice,
+      settlement
+    };
+  };
+
+  const res1 = useMemo(() => calculateValues(calc1), [calc1]);
+  const res2 = useMemo(() => calculateValues(calc2), [calc2]);
+
+  const InputGroup = ({ label, value, onChange, icon: Icon, suffix = "₹" }) => (
+    <div className="flex flex-col gap-1.5 mb-4">
+      <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider flex items-center gap-1">
+        {Icon && <Icon size={12} />}
+        {label}
+      </label>
+      <div className="relative">
+        <input
+          type="number"
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          className="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3 text-slate-800 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none font-medium"
+        />
+        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">{suffix}</span>
+      </div>
+    </div>
+  );
+
+  const CalculatorCard = ({ title, state, setState, results, id }) => (
+    <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden flex flex-col h-full">
+      <div className="p-6 border-b border-slate-50 flex justify-between items-center bg-slate-50/50">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-lg shadow-blue-200">
+            <Calculator size={20} />
+          </div>
+          <h2 className="text-lg font-bold text-slate-800">{title}</h2>
+        </div>
+        <div className="text-[10px] font-bold bg-blue-100 text-blue-700 px-2 py-1 rounded uppercase">Active</div>
+      </div>
+
+      <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-1">
+        <InputGroup 
+          label="Product Cost" 
+          value={state.cost} 
+          onChange={(v) => setState({...state, cost: v})} 
+          icon={DollarSign}
+        />
+        <InputGroup 
+          label="Flipkart Commission" 
+          value={state.commission} 
+          onChange={(v) => setState({...state, commission: v})} 
+          icon={Tag}
+        />
+        <InputGroup 
+          label="Shipping Charge" 
+          value={state.shipping} 
+          onChange={(v) => setState({...state, shipping: v})} 
+          icon={Truck}
+        />
+        <InputGroup 
+          label="Packaging Cost" 
+          value={state.packaging} 
+          onChange={(v) => setState({...state, packaging: v})} 
+          icon={Package}
+        />
+        <InputGroup 
+          label="Return Risk (%)" 
+          value={state.returnRate} 
+          onChange={(v) => setState({...state, returnRate: v})} 
+          suffix="%"
+        />
+        <InputGroup 
+          label="Promotion (%)" 
+          value={state.promoRate} 
+          onChange={(v) => setState({...state, promoRate: v})} 
+          suffix="%"
+        />
+        <InputGroup 
+          label="Desired Profit Margin" 
+          value={state.margin} 
+          onChange={(v) => setState({...state, margin: v})} 
+          icon={TrendingUp}
+        />
+        
+        <div className="flex flex-col gap-1.5 mb-4">
+          <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider flex items-center gap-1">
+            <Settings size={12} />
+            GST Rate
+          </label>
+          <select 
+            value={state.gstRate} 
+            onChange={(e) => setState({...state, gstRate: parseFloat(e.target.value)})}
+            className="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3 text-slate-800 focus:ring-2 focus:ring-blue-500 outline-none appearance-none cursor-pointer font-medium"
+          >
+            <option value={0}>0% (Exempt)</option>
+            <option value={0.05}>5% (Essential)</option>
+            <option value={0.12}>12% (Standard)</option>
+            <option value={0.18}>18% (General)</option>
+            <option value={0.28}>28% (Luxury)</option>
+          </select>
+        </div>
+      </div>
+
+      <div className="mt-auto bg-slate-900 p-6 text-white">
+        <div className="grid grid-cols-2 gap-4 mb-6">
+          <div className="p-3 bg-slate-800/50 rounded-xl border border-slate-700/50">
+            <p className="text-slate-400 text-[10px] uppercase font-bold tracking-widest mb-1">Total (Pre-GST)</p>
+            <p className="text-xl font-mono">₹{results.totalBeforeGst.toFixed(2)}</p>
+          </div>
+          <div className="p-3 bg-slate-800/50 rounded-xl border border-slate-700/50">
+            <p className="text-slate-400 text-[10px] uppercase font-bold tracking-widest mb-1">GST Tax</p>
+            <p className="text-xl font-mono text-blue-400">₹{results.gstAmount.toFixed(2)}</p>
+          </div>
+        </div>
+
+        <div className="relative group">
+          <div className="flex justify-between items-end mb-2">
+            <div>
+              <p className="text-blue-400 text-xs font-bold uppercase tracking-widest">Recommended Selling Price</p>
+              <h3 className="text-4xl font-black tracking-tight">
+                ₹{Math.round(results.sellingPrice)}
+              </h3>
+            </div>
+            <button 
+              onClick={() => handleCopy(results.sellingPrice, id)}
+              className="p-3 bg-blue-600 hover:bg-blue-500 rounded-full transition-colors active:scale-95"
+            >
+              {copied === id ? <CheckCircle2 size={20} /> : <Copy size={20} />}
+            </button>
+          </div>
+          <div className="h-1 w-full bg-slate-700 rounded-full overflow-hidden">
+            <div className="h-full bg-blue-500 w-full animate-pulse"></div>
+          </div>
+        </div>
+
+        <div className="mt-6 flex items-center justify-between text-xs text-slate-400 border-t border-slate-800 pt-4">
+          <span className="flex items-center gap-1">
+            <Info size={14} /> Est. Settlement: 
+            <b className="text-green-400">₹{results.settlement.toFixed(2)}</b>
+          </span>
+          <span>Includes {state.gstRate * 100}% GST</span>
+        </div>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="min-h-screen bg-slate-100 p-4 md:p-8 font-sans">
+      <div className="max-w-6xl mx-auto">
+        <header className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-4">
+          <div>
+            <h1 className="text-3xl font-black text-slate-900 tracking-tight flex items-center gap-2">
+              Flipkart <span className="text-blue-600">Rate Card</span> Pricing
+            </h1>
+            <p className="text-slate-500 mt-1 font-medium">Professional Profitability Calculator & SKU Pricing Tool</p>
+          </div>
+          <div className="flex items-center gap-4 bg-white p-2 px-4 rounded-full shadow-sm border border-slate-200">
+            <div className="flex items-center gap-2 text-xs font-bold text-slate-600">
+              <span className="w-2 h-2 rounded-full bg-green-500 animate-ping"></span>
+              LIVE DATA READY
+            </div>
+            <div className="h-4 w-[1px] bg-slate-200"></div>
+            <div className="text-xs text-slate-400">v2.1.0</div>
+          </div>
+        </header>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <CalculatorCard 
+            title="Primary Product" 
+            state={calc1} 
+            setState={setCalc1} 
+            results={res1}
+            id="calc1"
+          />
+          <CalculatorCard 
+            title="Comparison / Set Price" 
+            state={calc2} 
+            setState={setCalc2} 
+            results={res2}
+            id="calc2"
+          />
+        </div>
+
+        <section className="mt-12">
+          <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+            <h3 className="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
+              <AlertCircle size={20} className="text-blue-600" />
+              Pricing Strategy Guide
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="p-4 rounded-xl bg-slate-50 border border-slate-100">
+                <p className="text-sm font-bold text-slate-700 mb-1">Return Risk</p>
+                <p className="text-xs text-slate-500 leading-relaxed">
+                  We calculate return cost as a percentage of your base product cost. On Flipkart, aim for 10-15% depending on category.
+                </p>
+              </div>
+              <div className="p-4 rounded-xl bg-slate-50 border border-slate-100">
+                <p className="text-sm font-bold text-slate-700 mb-1">GST & Commission</p>
+                <p className="text-xs text-slate-500 leading-relaxed">
+                  The calculator adds GST at the end of all operational costs and margin to ensure your profit is tax-protected.
+                </p>
+              </div>
+              <div className="p-4 rounded-xl bg-slate-50 border border-slate-100">
+                <p className="text-sm font-bold text-slate-700 mb-1">Margin Protection</p>
+                <p className="text-xs text-slate-500 leading-relaxed">
+                  Always include your target absolute profit (₹) in the Margin field to see the real selling price required.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <footer className="mt-12 text-center text-slate-400 text-xs py-8 border-t border-slate-200">
+          <p>© 2026 E-commerce Pricing Engine. Built for Flipkart Marketplace Sellers.</p>
+        </footer>
+      </div>
+    </div>
+  );
+};
+
+export default App;

@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flipkart Professional Seller Calculator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f3f4f6; }
+        .card { background: white; border-radius: 1rem; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); border: 1px solid #e5e7eb; }
+        .input-group:focus-within label { color: #2563eb; }
+        input::-webkit-inner-spin-button, input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+        .transition-all { transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
+        .tab-active { background: #2563eb; color: white; border-color: #2563eb; }
+        .mode-btn-active { background: #1e293b; color: white; }
+    </style>
+</head>
+<body class="py-8 px-4 md:px-8">
+
+    <div class="max-w-6xl mx-auto">
+        <!-- Header -->
+        <header class="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div>
+                <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight">Flipkart Pricing Hub</h1>
+                <p class="text-slate-500 mt-1">Smart Selling Price & Profit Estimator</p>
+            </div>
+            
+            <div class="flex flex-col items-center md:items-end gap-3">
+                <div class="flex bg-slate-200 p-1 rounded-xl w-fit">
+                    <button onclick="setMode('analysis')" id="mode-analysis" class="px-4 py-2 rounded-lg text-xs font-bold transition-all mode-btn-active">PROFIT ANALYSIS</button>
+                    <button onclick="setMode('pricing')" id="mode-pricing" class="px-4 py-2 rounded-lg text-xs font-bold transition-all text-slate-600">TARGET PRICING</button>
+                </div>
+                <div class="flex bg-white p-1 rounded-xl shadow-sm border border-slate-200">
+                    <button onclick="changeTier('Bronze')" id="tier-Bronze" class="tier-btn px-4 py-1.5 rounded-lg text-[10px] font-bold transition-all hover:bg-slate-50">BRONZE</button>
+                    <button onclick="changeTier('Silver')" id="tier-Silver" class="tier-btn px-4 py-1.5 rounded-lg text-[10px] font-bold transition-all hover:bg-slate-50">SILVER</button>
+                    <button onclick="changeTier('Gold')" id="tier-Gold" class="tier-btn px-4 py-1.5 rounded-lg text-[10px] font-bold transition-all tab-active shadow-md">GOLD</button>
+                </div>
+            </div>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <!-- Left Side: Inputs -->
+            <div class="lg:col-span-2 space-y-6">
+                
+                <!-- Main Calculation Card -->
+                <div class="card p-6 md:p-8 border-t-4 border-blue-600">
+                    <div class="flex items-center justify-between mb-6">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center text-blue-600">
+                                <i class="fas fa-calculator"></i>
+                            </div>
+                            <h2 id="section-title" class="text-lg font-bold text-slate-800">Profit Analysis</h2>
+                        </div>
+                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Core Values</span>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Mode-Dependent Input 1 -->
+                        <div id="sp-input-container" class="input-group">
+                            <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Selling Price (Excl. GST)</label>
+                            <div class="relative">
+                                <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold">₹</span>
+                                <input type="number" id="priceExclGst" value="1000" class="w-full pl-8 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all font-bold text-lg">
+                            </div>
+                            <p class="text-[10px] text-slate-400 mt-1">The price shown to customers (without tax)</p>
+                        </div>
+
+                        <!-- Mode-Dependent Input 2 (Hidden in Analysis mode, shown in Pricing) -->
+                        <div id="margin-input-container" class="input-group hidden">
+                            <label class="block text-xs font-bold text-blue-600 uppercase tracking-wider mb-2">Desired Profit (Net ₹)</label>
+                            <div class="relative">
+                                <span class="absolute left-4 top-1/2 -translate-y-1/2 text-blue-400 font-bold">₹</span>
+                                <input type="number" id="targetProfit" value="200" class="w-full pl-8 pr-4 py-3 bg-blue-50 border border-blue-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all font-bold text-lg">
+                            </div>
+                            <p class="text-[10px] text-blue-400 mt-1">How much clean cash you want to keep</p>
+                        </div>
+
+                        <div class="input-group">
+                            <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Purchase Price (Excl. GST)</label>
+                            <div class="relative">
+                                <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold">₹</span>
+                                <input type="number" id="purchaseCost" value="400" class="w-full pl-8 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all font-bold text-lg">
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">GST Rate on Product</label>
+                            <select id="gstRate" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none font-bold">
+                                <option value="0">0% (GST Exempt)</option>
+                                <option value="5">5% (Essentials)</option>
+                                <option value="12" selected>12% (Standard)</option>
+                                <option value="18">18% (Most Items)</option>
+                                <option value="28">28% (Luxury/Electronics)</option>
+                            </select>
+                        </div>
+
+                        <div class="input-group">
+                            <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Flipkart Commission %</label>
+                            <div class="relative">
+                                <input type="number" id="commissionPercent" value="12" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none font-bold">
+                                <span class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold">%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Logistics & Operations -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="card p-6">
+                        <div class="flex items-center gap-3 mb-4">
+                            <i class="fas fa-truck text-orange-500"></i>
+                            <h3 class="font-bold text-slate-800">Logistics</h3>
+                        </div>
+                        <div class="space-y-4">
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="text-[10px] font-bold text-slate-400 block mb-1">WEIGHT (GM)</label>
+                                    <input type="number" id="weight" value="500" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm font-bold">
+                                </div>
+                                <div>
+                                    <label class="text-[10px] font-bold text-slate-400 block mb-1">ZONE</label>
+                                    <select id="zone" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm font-bold">
+                                        <option value="Local">Local</option>
+                                        <option value="Regional">Regional</option>
+                                        <option value="National" selected>National</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="text-[10px] font-bold text-slate-400 block mb-1">PAYMENT TYPE</label>
+                                <select id="paymentType" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm font-bold">
+                                    <option value="Prepaid">Prepaid</option>
+                                    <option value="Postpaid">Postpaid (COD)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card p-6">
+                        <div class="flex items-center gap-3 mb-4">
+                            <i class="fas fa-box text-purple-500"></i>
+                            <h3 class="font-bold text-slate-800">Operational</h3>
+                        </div>
+                        <div class="space-y-4">
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="text-[10px] font-bold text-slate-400 block mb-1">PACKAGING</label>
+                                    <input type="number" id="packagingCost" value="10" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm font-bold">
+                                </div>
+                                <div>
+                                    <label class="text-[10px] font-bold text-slate-400 block mb-1">ADS/MARKETING</label>
+                                    <input type="number" id="adsCost" value="20" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm font-bold">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="text-[10px] font-bold text-slate-400 block mb-1">EST. RETURNS %</label>
+                                <input type="number" id="returnRate" value="10" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm font-bold">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Side: Results -->
+            <div class="lg:col-span-1">
+                <div class="sticky top-8 space-y-6">
+                    
+                    <!-- Result Card -->
+                    <div id="profit-card" class="bg-blue-600 rounded-2xl p-8 text-white shadow-xl shadow-blue-200 transition-all duration-300">
+                        <div class="flex justify-between items-start mb-4">
+                            <p id="result-label" class="text-blue-100 text-sm font-semibold uppercase tracking-widest">Net Profit</p>
+                            <span id="tier-badge" class="bg-blue-400/30 px-2 py-1 rounded text-[10px] font-bold">GOLD TIER</span>
+                        </div>
+                        <h3 id="result-main-value" class="text-4xl font-extrabold mb-2">₹0.00</h3>
+                        <div id="sub-result-container" class="flex items-center gap-2">
+                            <span id="result-margin" class="bg-white/20 px-3 py-1 rounded-full text-sm font-bold">0% Margin</span>
+                        </div>
+                        <div id="pricing-result-note" class="mt-4 pt-4 border-t border-white/20 hidden">
+                            <p class="text-xs text-blue-100">Recommended listing price to achieve your profit goal after all fees and taxes.</p>
+                        </div>
+                    </div>
+
+                    <!-- Breakdown -->
+                    <div class="card p-6">
+                        <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-6 pb-2 border-b">Detailed Summary</h4>
+                        
+                        <div class="space-y-3">
+                            <div class="flex justify-between text-sm">
+                                <span class="text-slate-500">Calculated Selling Price</span>
+                                <span id="summary-sp" class="font-bold text-slate-800">₹0.00</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span class="text-slate-500">Product GST (Customer Pays)</span>
+                                <span id="summary-gst" class="font-bold text-slate-800">₹0.00</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span class="text-slate-500">Marketplace Fees (Incl. GST)</span>
+                                <span id="summary-fees" class="font-bold text-red-500">₹0.00</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span class="text-slate-500">Direct Costs (Purchase+Pkg)</span>
+                                <span id="summary-costs" class="font-bold text-slate-800">₹0.00</span>
+                            </div>
+                            <div class="pt-4 border-t flex justify-between">
+                                <span class="font-bold text-slate-800">Bank Settlement</span>
+                                <span id="summary-settlement" class="font-bold text-green-600">₹0.00</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Disclaimer -->
+                    <div class="p-4 rounded-xl bg-slate-100 border border-slate-200">
+                        <p class="text-[10px] text-slate-500 leading-relaxed">
+                            <i class="fas fa-info-circle mr-1"></i>
+                            Calculations are based on typical Flipkart rate cards. Fees may vary by specific category and seller agreements. Includes 18% GST on service fees.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        const RATES = {
+            FixedFee: [
+                { limit: 300, Bronze: 17, Silver: 14, Gold: 11 },
+                { limit: 500, Bronze: 20, Silver: 16, Gold: 13 },
+                { limit: 1000, Bronze: 38, Silver: 30, Gold: 24 },
+                { limit: Infinity, Bronze: 65, Silver: 52, Gold: 41 }
+            ],
+            Collection: { Prepaid: 0.02, Postpaid: 0.02 },
+            Shipping: {
+                Local: { base: 42, add: 14 },
+                Regional: { base: 51, add: 18 },
+                National: { base: 64, add: 26 }
+            }
+        };
+
+        let currentTier = 'Gold';
+        let currentMode = 'analysis'; // 'analysis' or 'pricing'
+
+        function setMode(mode) {
+            currentMode = mode;
+            document.getElementById('mode-analysis').className = mode === 'analysis' ? 'px-4 py-2 rounded-lg text-xs font-bold transition-all mode-btn-active' : 'px-4 py-2 rounded-lg text-xs font-bold transition-all text-slate-600';
+            document.getElementById('mode-pricing').className = mode === 'pricing' ? 'px-4 py-2 rounded-lg text-xs font-bold transition-all mode-btn-active' : 'px-4 py-2 rounded-lg text-xs font-bold transition-all text-slate-600';
+            
+            // Toggle visibility
+            document.getElementById('sp-input-container').className = mode === 'analysis' ? 'input-group' : 'input-group opacity-50 pointer-events-none';
+            document.getElementById('margin-input-container').classList.toggle('hidden', mode === 'analysis');
+            
+            document.getElementById('section-title').innerText = mode === 'analysis' ? 'Profit Analysis' : 'Target Pricing';
+            document.getElementById('result-label').innerText = mode === 'analysis' ? 'Net Profit' : 'Required Listing Price';
+            document.getElementById('pricing-result-note').classList.toggle('hidden', mode === 'analysis');
+            document.getElementById('sub-result-container').classList.toggle('hidden', mode === 'pricing');
+
+            calculate();
+        }
+
+        function changeTier(tier) {
+            currentTier = tier;
+            document.querySelectorAll('.tier-btn').forEach(btn => {
+                btn.classList.remove('tab-active', 'shadow-md');
+                if (btn.id === `tier-${tier}`) btn.classList.add('tab-active', 'shadow-md');
+            });
+            document.getElementById('tier-badge').innerText = `${tier.toUpperCase()} TIER`;
+            calculate();
+        }
+
+        function updateStyle(isNegative) {
+            const card = document.getElementById('profit-card');
+            card.classList.remove('bg-blue-600', 'bg-orange-600', 'bg-slate-600', 'bg-red-600', 'shadow-blue-200', 'shadow-orange-200', 'shadow-slate-200', 'shadow-red-200');
+
+            if (isNegative && currentMode === 'analysis') {
+                card.classList.add('bg-red-600', 'shadow-red-200');
+            } else {
+                if (currentTier === 'Bronze') card.classList.add('bg-orange-600', 'shadow-orange-200');
+                else if (currentTier === 'Silver') card.classList.add('bg-slate-600', 'shadow-slate-200');
+                else card.classList.add('bg-blue-600', 'shadow-blue-200');
+            }
+        }
+
+        function getFeesForSP(spExclGst, productGstRate) {
+            const spInclGst = spExclGst * (1 + productGstRate / 100);
+            
+            // Commission
+            const commVal = parseFloat(document.getElementById('commissionPercent').value) || 0;
+            const commission = (spInclGst * commVal) / 100;
+
+            // Fixed
+            let fixed = 0;
+            for (let slab of RATES.FixedFee) {
+                if (spInclGst <= slab.limit) {
+                    fixed = slab[currentTier];
+                    break;
+                }
+            }
+
+            // Collection
+            const pType = document.getElementById('paymentType').value;
+            const collection = spInclGst * RATES.Collection[pType];
+
+            // Shipping
+            const weight = parseFloat(document.getElementById('weight').value) || 0;
+            const zone = document.getElementById('zone').value;
+            const slabs = Math.ceil(weight / 500);
+            let shipping = RATES.Shipping[zone].base;
+            if (slabs > 1) shipping += (slabs - 1) * RATES.Shipping[zone].add;
+
+            const totalServiceFees = commission + fixed + collection + shipping;
+            const serviceGst = totalServiceFees * 0.18;
+
+            return {
+                spInclGst,
+                commission,
+                fixed,
+                collection,
+                shipping,
+                serviceGst,
+                totalDeduction: totalServiceFees + serviceGst
+            };
+        }
+
+        function calculate() {
+            const purchase = parseFloat(document.getElementById('purchaseCost').value) || 0;
+            const gstRate = parseFloat(document.getElementById('gstRate').value) || 0;
+            const pkg = parseFloat(document.getElementById('packagingCost').value) || 0;
+            const ads = parseFloat(document.getElementById('adsCost').value) || 0;
+            const returnRate = parseFloat(document.getElementById('returnRate').value) || 0;
+            
+            let spExclGst = parseFloat(document.getElementById('priceExclGst').value) || 0;
+            let finalProfit = 0;
+            let results = null;
+
+            if (currentMode === 'analysis') {
+                results = getFeesForSP(spExclGst, gstRate);
+                const bankSettlement = results.spInclGst - results.totalDeduction;
+                const productGstPayable = results.spInclGst - spExclGst;
+                
+                // Net Profit = Settlement - Purchase - Product GST - Operational Costs
+                const baseProfit = bankSettlement - purchase - productGstPayable - pkg - ads;
+                
+                // Return factor
+                const revShipping = results.shipping * 1.5;
+                const returnLoss = (results.shipping + revShipping + pkg) * (returnRate / 100);
+                
+                finalProfit = baseProfit - returnLoss;
+            } else {
+                // Pricing Mode: Find SP that yields Target Profit
+                const target = parseFloat(document.getElementById('targetProfit').value) || 0;
+                
+                // Iterative search for precise SP since Fixed Fee changes by slabs
+                let low = purchase;
+                let high = purchase * 10;
+                let iterations = 0;
+                
+                while (iterations < 20) {
+                    spExclGst = (low + high) / 2;
+                    results = getFeesForSP(spExclGst, gstRate);
+                    const bankSettlement = results.spInclGst - results.totalDeduction;
+                    const productGstPayable = results.spInclGst - spExclGst;
+                    const baseProfit = bankSettlement - purchase - productGstPayable - pkg - ads;
+                    const revShipping = results.shipping * 1.5;
+                    const returnLoss = (results.shipping + revShipping + pkg) * (returnRate / 100);
+                    
+                    const currentProfit = baseProfit - returnLoss;
+                    
+                    if (currentProfit < target) low = spExclGst;
+                    else high = spExclGst;
+                    iterations++;
+                }
+                finalProfit = target; // In this mode, we display the calculated SP
+            }
+
+            // Update UI
+            const fmt = (val) => new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(val);
+            
+            if (currentMode === 'analysis') {
+                document.getElementById('result-main-value').innerText = fmt(finalProfit);
+                const margin = spExclGst > 0 ? (finalProfit / spExclGst) * 100 : 0;
+                document.getElementById('result-margin').innerText = `${margin.toFixed(1)}% Margin`;
+                updateStyle(finalProfit < 0);
+            } else {
+                document.getElementById('result-main-value').innerText = fmt(spExclGst);
+                updateStyle(false);
+            }
+
+            document.getElementById('summary-sp').innerText = fmt(spExclGst);
+            document.getElementById('summary-gst').innerText = fmt(results.spInclGst - spExclGst);
+            document.getElementById('summary-fees').innerText = fmt(results.totalDeduction);
+            document.getElementById('summary-costs').innerText = fmt(purchase + pkg + ads);
+            document.getElementById('summary-settlement').innerText = fmt(results.spInclGst - results.totalDeduction);
+        }
+
+        // Attach listeners
+        const inputIds = ['priceExclGst', 'targetProfit', 'purchaseCost', 'gstRate', 'commissionPercent', 'weight', 'zone', 'paymentType', 'packagingCost', 'adsCost', 'returnRate'];
+        inputIds.forEach(id => document.getElementById(id).addEventListener('input', calculate));
+
+        window.onload = () => {
+            calculate();
+            // Start in analysis mode
+            setMode('analysis');
+        };
+    </script>
+</body>
+</html>
